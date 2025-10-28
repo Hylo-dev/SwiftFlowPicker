@@ -5,7 +5,7 @@ import SwiftUI
 
 @available(iOS 26.0, *)
 @available(macOS 26.0, *)
-struct PickerSliderView
+struct FlowPicker
 	   <T: RawRepresentable & CaseIterable & Equatable & Hashable>: View where T.RawValue == String {
 	
 	@Binding var selectedSection: T

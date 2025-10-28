@@ -5,7 +5,7 @@ import SwiftUI
 
 @available(iOS 26.0, *)
 @available(macOS 26.0, *)
-struct SegmentedFlowPicker
+public struct SegmentedFlowPicker
 	   <T: RawRepresentable & CaseIterable & Equatable & Hashable>: View where T.RawValue == String {
 	
 	@Binding var selectedSection: T
@@ -16,12 +16,12 @@ struct SegmentedFlowPicker
 		
 	private let allCases: [T]
 	
-	init(selectedSection: Binding<T>) {
+	public init(selectedSection: Binding<T>) {
 		self._selectedSection = selectedSection
 		self.allCases = Array(T.allCases)
 	}
 	
-	var body: some View {
+	public var body: some View {
 		GeometryReader { proxy in
 			ZStack {
 				HStack {
@@ -79,19 +79,19 @@ struct SegmentedFlowPicker
 		.buttonStyle(.plain)
 	}
 	
-	func buttonFocusedColor(_ color: Color) -> Self {
+	public func buttonFocusedColor(_ color: Color) -> Self {
 		var view = self
 		view.selectionColor = color
 		return view
 	}
 	
-	func backgroundColor(_ color: Color) -> Self {
+	public func backgroundColor(_ color: Color) -> Self {
 		var view = self
 		view.backgroundColor = color
 		return view
 	}
 	
-	func clipShape<S: Shape>(_ shape: S) -> Self {
+	public func clipShape<S: Shape>(_ shape: S) -> Self {
 		var view = self
 		view.shapeButton = AnyShape(shape)
 		return view

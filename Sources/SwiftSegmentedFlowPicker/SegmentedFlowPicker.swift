@@ -20,18 +20,21 @@ import SwiftUI
 /// Example usage:
 /// ```swift
 /// enum Tab: String, CaseIterable {
-///     case home, profile, settings
+/// 	case home     = "house"
+/// 	case profile  = "person"
+/// 	case settings = "gear"
 /// }
 ///
 /// @State private var selectedTab: Tab = .home
 ///
 /// SegmentedFlowPicker(selectedSection: $selectedTab) { tab in
-///     Image(systemName: tab.iconName)
+///     Image(systemName: tab.rawValue)
 /// }
 /// .buttonFocusedColor(.blue)
 /// .clipShape(RoundedRectangle(cornerRadius: 12))
+/// .glassEffect()
+///
 /// ```
-@available(macOS 26.0, *)
 public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable & Hashable, Content: View>: View where T.RawValue == String {
 
 	/// Binding to the currently selected segment
@@ -46,8 +49,11 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	/// The background color of the picker (default: clear)
 	private var backgroundColor: Color = .clear
 	
-	/// The shape used for the selection indicator button (default: rounded rectangle with 10pt radius)
+	/// The shape used for the selection indicator button (default: rounded rectangle with 15pt radius)
 	private var shapeButton: AnyShape = AnyShape(.rect(cornerRadius: 15))
+	
+	///
+	private var hasGlassEffect: Bool = false;
 
 	/// Array of all available cases from the generic enum type
 	private let allCases: [T]
@@ -78,16 +84,24 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			.background(
 				// Animated sliding indicator background
 				GeometryReader { buttonsProxy in
-					AnyShape(self.shapeButton)
-						.glassEffect(
-							self.selectionColor == nil ?
-								.regular.interactive() :
-								.regular.tint(self.selectionColor).interactive()
-						)
-						.frame(width: buttonsProxy.size.width / CGFloat(allCases.count), height: 27)
-						.offset(
-							x: buttonsProxy.size.width / CGFloat(allCases.count) * CGFloat(currentIndex)
-						)
+					let buttonWidth = buttonsProxy.size.width / CGFloat(allCases.count)
+					
+					if #available(macOS 26.0, *), self.hasGlassEffect {
+						AnyShape(self.shapeButton)
+							.glassEffect(
+								self.selectionColor == nil ?
+									.regular.interactive() :
+										.regular.tint(self.selectionColor).interactive(),
+								in: self.shapeButton
+							)
+							.frame( width: buttonWidth, height: 27 )
+							.offset(x: buttonWidth * CGFloat(currentIndex))
+					} else {
+						AnyShape(self.shapeButton)
+							.fill(self.selectionColor ?? .gray)
+							.frame( width: buttonWidth, height: 27 )
+							.offset(x: buttonWidth * CGFloat(currentIndex))
+					}
 				}
 			)
 			.background(
@@ -162,4 +176,32 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		view.shapeButton = AnyShape(shape)
 		return view
 	}
+	
+	/// Applies the Liquid Glass effect to the view
+	///
+	/// - Returns: A modified copy of the picker with the specified shape
+	@available(macOS 26.0, *)
+	public func glassEffect() -> Self {
+		var view = self
+		view.hasGlassEffect = true
+		return view
+	}
 }
+
+//enum Tab: String, CaseIterable {
+//	case home     = "house"
+//	case profile  = "person"
+//	case settings = "gear"
+//}
+//
+//@available(macOS 26.0, *)
+//#Preview {
+//	@Previewable @State var selectedTab: Tab = .home
+//
+//	SegmentedFlowPicker(selectedSection: $selectedTab) { tab in
+//		Image(systemName: tab.rawValue)
+//	}
+//	.buttonFocusedColor(.blue)
+//	.clipShape(RoundedRectangle(cornerRadius: 10))
+//	.glassEffect()
+//}

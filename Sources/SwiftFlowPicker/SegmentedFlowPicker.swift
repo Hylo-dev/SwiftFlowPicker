@@ -1,22 +1,56 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
-
 import SwiftUI
 
-@available(iOS 26.0, *)
+/// A customizable segmented picker control with a sliding glass effect indicator.
+///
+/// `SegmentedFlowPicker` provides a modern, animated segmented control where each segment
+/// can display custom content. The selected segment is highlighted with a sliding glass
+/// effect background that smoothly animates between selections.
+///
+/// - Parameters:
+///   - T: An enum type that conforms to `RawRepresentable`, `CaseIterable`, `Equatable`, and `Hashable`
+///        with a `String` raw value. This represents the available segments.
+///   - Content: The type of view that each segment will display.
+///
+/// Example usage:
+/// ```swift
+/// enum Tab: String, CaseIterable {
+///     case home, profile, settings
+/// }
+///
+/// @State private var selectedTab: Tab = .home
+///
+/// SegmentedFlowPicker(selectedSection: $selectedTab) { tab in
+///     Image(systemName: tab.iconName)
+/// }
+/// .buttonFocusedColor(.blue)
+/// .clipShape(RoundedRectangle(cornerRadius: 12))
+/// ```
 @available(macOS 26.0, *)
 public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable & Hashable, Content: View>: View where T.RawValue == String {
-	
+
+	/// Binding to the currently selected segment
 	@Binding private var selectedSection: T
+	
+	/// Closure that generates the view content for each segment
 	private let content: (T) -> Content
+
+	/// The color of the sliding selection indicator (default: accent color)
+	private var selectionColor: Color = .accentColor
 	
-	private var selectionColor : Color    = .accentColor
-	private var backgroundColor: Color	  = .clear
-	private var shapeButton	   : AnyShape = AnyShape(.rect(cornerRadius: 10))
-		
+	/// The background color of the picker (default: clear)
+	private var backgroundColor: Color = .clear
+	
+	/// The shape used for the selection indicator button (default: rounded rectangle with 10pt radius)
+	private var shapeButton: AnyShape = AnyShape(.rect(cornerRadius: 10))
+
+	/// Array of all available cases from the generic enum type
 	private let allCases: [T]
-	
-	// Inizializzatore con closure che restituisce una view per ogni case
+
+	/// Creates a new segmented flow picker with custom content for each segment.
+	///
+	/// - Parameters:
+	///   - selectedSection: A binding to the currently selected segment value
+	///   - content: A view builder closure that returns the view to display for each segment case
 	public init(
 		selectedSection: Binding<T>,
 		@ViewBuilder content: @escaping (T) -> Content
@@ -25,10 +59,11 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		self.allCases = Array(T.allCases)
 		self.content = content
 	}
-	
+
 	public var body: some View {
 		GeometryReader { proxy in
 			ZStack {
+				// Horizontal stack containing all segment buttons
 				HStack {
 					ForEach(allCases.indices, id: \.self) { index in
 						buttonNavigation(index).tag(allCases[index])
@@ -38,6 +73,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 				.padding(.vertical, 7)
 				.frame(maxWidth: .infinity, alignment: .leading)
 				.background(
+					// Animated sliding indicator background
 					GeometryReader { buttonsProxy in
 						AnyShape(self.shapeButton)
 							.glassEffect(
@@ -55,11 +91,18 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		}
 		.frame(height: 25)
 	}
-	
+
+	/// Computes the index of the currently selected segment
+	///
+	/// - Returns: The index of the selected segment, or 0 if not found
 	private var currentIndex: Int {
 		allCases.firstIndex(of: selectedSection) ?? 0
 	}
-	
+
+	/// Creates a button for a specific segment at the given index.
+	///
+	/// - Parameter index: The index of the segment in the `allCases` array
+	/// - Returns: A button view configured for the specified segment
 	@ViewBuilder
 	private func buttonNavigation(_ index: Int) -> some View {
 		Button {
@@ -78,23 +121,35 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 						: .primary
 				)
 				.contentShape(Rectangle())
-			
+
 		}
 		.buttonStyle(.plain)
 	}
-	
+
+	/// Sets the color of the selection indicator.
+	///
+	/// - Parameter color: The color to use for the focused/selected segment indicator
+	/// - Returns: A modified copy of the picker with the specified selection color
 	public func buttonFocusedColor(_ color: Color) -> Self {
 		var view = self
 		view.selectionColor = color
 		return view
 	}
-	
+
+	/// Sets the background color of the entire picker.
+	///
+	/// - Parameter color: The background color for the picker
+	/// - Returns: A modified copy of the picker with the specified background color
 	public func backgroundColor(_ color: Color) -> Self {
 		var view = self
 		view.backgroundColor = color
 		return view
 	}
-	
+
+	/// Sets a custom shape for the selection indicator.
+	///
+	/// - Parameter shape: The shape to use for the selection indicator background
+	/// - Returns: A modified copy of the picker with the specified shape
 	public func clipShape<S: Shape>(_ shape: S) -> Self {
 		var view = self
 		view.shapeButton = AnyShape(shape)

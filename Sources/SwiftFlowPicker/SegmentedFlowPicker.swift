@@ -83,7 +83,6 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 							.offset(
 								x: buttonsProxy.size.width / CGFloat(allCases.count) * CGFloat(currentIndex)
 							)
-							.padding(.top, 7)
 					}
 				)
 				.padding(.horizontal)

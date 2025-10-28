@@ -10,9 +10,9 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	@Binding private var selectedSection: T
 	private let content: (T) -> Content
 	
-	private var selectionColor: Color = .accentColor
-	private var backgroundColor: Color = .clear
-	private var shapeButton: AnyShape = AnyShape(.rect(cornerRadius: 10))
+	private var selectionColor : Color    = .accentColor
+	private var backgroundColor: Color	  = .clear
+	private var shapeButton	   : AnyShape = AnyShape(.rect(cornerRadius: 10))
 		
 	private let allCases: [T]
 	
@@ -39,7 +39,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 				.frame(maxWidth: .infinity, alignment: .leading)
 				.background(
 					GeometryReader { buttonsProxy in
-						Rectangle()
+						RoundedRectangle(cornerRadius: 10)
 							.glassEffect(
 								.regular.tint(self.selectionColor).interactive()
 							)
@@ -48,7 +48,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 								x: buttonsProxy.size.width / CGFloat(allCases.count) * CGFloat(currentIndex)
 							)
 							.padding(.top, 7)
-							.clipShape(self.shapeButton)
+							//.clipShape(self.shapeButton)
 					}
 				)
 				.padding(.horizontal)
@@ -78,8 +78,8 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 						? .white
 						: .primary
 				)
-				.animation(.easeInOut(duration: 0.15), value: selectedSection)
 				.contentShape(Rectangle())
+			
 		}
 		.buttonStyle(.plain)
 	}

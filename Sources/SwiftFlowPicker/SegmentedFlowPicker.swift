@@ -5,20 +5,25 @@ import SwiftUI
 
 @available(iOS 26.0, *)
 @available(macOS 26.0, *)
-public struct SegmentedFlowPicker
-	   <T: RawRepresentable & CaseIterable & Equatable & Hashable>: View where T.RawValue == String {
+public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable & Hashable, Content: View>: View where T.RawValue == String {
 	
-	@Binding var selectedSection: T
+	@Binding private var selectedSection: T
+	private let content: (T) -> Content
 	
-	private var selectionColor : Color = .accentColor
+	private var selectionColor: Color = .accentColor
 	private var backgroundColor: Color = .clear
-	private var shapeButton	   : AnyShape = AnyShape(.rect(cornerRadius: 10))
+	private var shapeButton: AnyShape = AnyShape(.rect(cornerRadius: 10))
 		
 	private let allCases: [T]
 	
-	public init(selectedSection: Binding<T>) {
+	// Inizializzatore con closure che restituisce una view per ogni case
+	public init(
+		selectedSection: Binding<T>,
+		@ViewBuilder content: @escaping (T) -> Content
+	) {
 		self._selectedSection = selectedSection
 		self.allCases = Array(T.allCases)
+		self.content = content
 	}
 	
 	public var body: some View {
@@ -63,7 +68,7 @@ public struct SegmentedFlowPicker
 				self.selectedSection = allCases[index]
 			}
 		} label: {
-			Image(systemName: allCases[index].rawValue)
+			content(allCases[index])
 				.frame(width: 15, height: 15)
 				.padding(.vertical, 4)
 				.padding(.horizontal, 8)
@@ -96,5 +101,4 @@ public struct SegmentedFlowPicker
 		view.shapeButton = AnyShape(shape)
 		return view
 	}
-	
 }

@@ -1,3 +1,9 @@
+//
+//  SegmentedFlowPicker.swift
+//
+//  Created by eliorodr2104 and c4v4h on 28/10/25.
+//
+
 import SwiftUI
 
 /// A customizable segmented picker control with a sliding glass effect indicator.

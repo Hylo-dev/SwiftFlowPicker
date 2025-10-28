@@ -41,7 +41,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	private var backgroundColor: Color = .clear
 	
 	/// The shape used for the selection indicator button (default: rounded rectangle with 10pt radius)
-	private var shapeButton: AnyShape = AnyShape(.rect(cornerRadius: 10))
+	private var shapeButton: AnyShape = AnyShape(.rect(cornerRadius: 15))
 
 	/// Array of all available cases from the generic enum type
 	private let allCases: [T]

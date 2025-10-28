@@ -1,1 +1,4 @@
 .DS_Store
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.swiftpm/xcode/package.xcworkspace/xcuserdata/eliorodr2104.xcuserdatad/UserInterfaceState.xcuserstate
+.swiftpm/xcode/xcuserdata/eliorodr2104.xcuserdatad/xcschemes/xcschememanagement.plist

@@ -111,7 +111,6 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			}
 		} label: {
 			content(allCases[index])
-				.frame(width: 15, height: 15)
 				.padding(.vertical, 4)
 				.padding(.horizontal, 8)
 				.frame(maxWidth: .infinity)

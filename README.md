@@ -48,7 +48,7 @@ Here the code for the ide `Aste-RISC` (the video above)
 
 First import the package:
 ``` swift
-import SegmentedFlowPicker
+import FlowPicker
 ```
 
 Then create an enum for the picker entries like this:

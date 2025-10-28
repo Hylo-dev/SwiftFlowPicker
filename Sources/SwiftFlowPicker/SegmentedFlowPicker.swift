@@ -62,31 +62,34 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 
 	public var body: some View {
 		GeometryReader { proxy in
-			ZStack {
-				// Horizontal stack containing all segment buttons
-				HStack {
-					ForEach(allCases.indices, id: \.self) { index in
-						buttonNavigation(index).tag(allCases[index])
-					}
+			// Horizontal stack containing all segment buttons
+			HStack {
+				ForEach(allCases.indices, id: \.self) { index in
+					buttonNavigation(index).tag(allCases[index])
 				}
-				.frame(maxWidth: .infinity, alignment: .leading)
-				.background(
-					// Animated sliding indicator background
-					GeometryReader { buttonsProxy in
-						AnyShape(self.shapeButton)
-							.glassEffect(
-								self.selectionColor == nil ?
-									.regular.interactive() :
-									.regular.tint(self.selectionColor).interactive()
-							)
-							.frame(width: buttonsProxy.size.width / CGFloat(allCases.count), height: 23)
-							.offset(
-								x: buttonsProxy.size.width / CGFloat(allCases.count) * CGFloat(currentIndex)
-							)
-					}
-				)
-				.padding(.horizontal)
 			}
+			.frame(maxWidth: .infinity, alignment: .leading)
+			.background(
+				// Animated sliding indicator background
+				GeometryReader { buttonsProxy in
+					AnyShape(self.shapeButton)
+						.glassEffect(
+							self.selectionColor == nil ?
+								.regular.interactive() :
+								.regular.tint(self.selectionColor).interactive()
+						)
+						.frame(width: buttonsProxy.size.width / CGFloat(allCases.count), height: 23)
+						.offset(
+							x: buttonsProxy.size.width / CGFloat(allCases.count) * CGFloat(currentIndex)
+						)
+				}
+			)
+			.background(
+				AnyShape(self.shapeButton)
+					.fill(self.backgroundColor)
+					.frame(maxWidth: .infinity)
+			)
+			.padding(.horizontal)
 		}
 		.frame(height: 25)
 	}

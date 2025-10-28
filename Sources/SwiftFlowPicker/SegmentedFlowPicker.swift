@@ -39,7 +39,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 				.frame(maxWidth: .infinity, alignment: .leading)
 				.background(
 					GeometryReader { buttonsProxy in
-						RoundedRectangle(cornerRadius: 10)
+						AnyShape(self.shapeButton)
 							.glassEffect(
 								.regular.tint(self.selectionColor).interactive()
 							)
@@ -48,7 +48,6 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 								x: buttonsProxy.size.width / CGFloat(allCases.count) * CGFloat(currentIndex)
 							)
 							.padding(.top, 7)
-							//.clipShape(self.shapeButton)
 					}
 				)
 				.padding(.horizontal)

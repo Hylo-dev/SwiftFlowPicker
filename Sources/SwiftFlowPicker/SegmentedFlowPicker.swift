@@ -35,7 +35,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	private let content: (T) -> Content
 
 	/// The color of the sliding selection indicator (default: accent color)
-	private var selectionColor: Color = .accentColor
+	private var selectionColor: Color? = nil
 	
 	/// The background color of the picker (default: clear)
 	private var backgroundColor: Color = .clear
@@ -77,7 +77,9 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 					GeometryReader { buttonsProxy in
 						AnyShape(self.shapeButton)
 							.glassEffect(
-								.regular.tint(self.selectionColor).interactive()
+								self.selectionColor == nil ?
+									.regular.interactive() :
+									.regular.tint(self.selectionColor).interactive()
 							)
 							.frame(width: buttonsProxy.size.width / CGFloat(allCases.count), height: 23)
 							.offset(

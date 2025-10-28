@@ -78,7 +78,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 								.regular.interactive() :
 								.regular.tint(self.selectionColor).interactive()
 						)
-						.frame(width: buttonsProxy.size.width / CGFloat(allCases.count), height: 23)
+						.frame(width: buttonsProxy.size.width / CGFloat(allCases.count), height: 27)
 						.offset(
 							x: buttonsProxy.size.width / CGFloat(allCases.count) * CGFloat(currentIndex)
 						)
@@ -91,7 +91,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			)
 			.padding(.horizontal)
 		}
-		.frame(height: 25)
+		.frame(height: 27)
 	}
 
 	/// Computes the index of the currently selected segment
@@ -113,9 +113,9 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			}
 		} label: {
 			content(allCases[index])
-//				.padding(.vertical, 4)
-//				.padding(.horizontal, 8)
-//				.frame(maxWidth: .infinity)
+				.padding(.vertical, 4)
+				.padding(.horizontal, 8)
+				.frame(maxWidth: .infinity)
 				.foregroundColor(
 					selectedSection == allCases[index]
 						? .white

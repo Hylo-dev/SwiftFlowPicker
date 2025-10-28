@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-@available(macOS 26.0, *)
 struct AnyShape: Shape {
 	private let _path: @Sendable (CGRect) -> Path
 	

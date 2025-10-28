@@ -69,8 +69,6 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 						buttonNavigation(index).tag(allCases[index])
 					}
 				}
-				.padding(.horizontal, 10)
-				.padding(.vertical, 7)
 				.frame(maxWidth: .infinity, alignment: .leading)
 				.background(
 					// Animated sliding indicator background

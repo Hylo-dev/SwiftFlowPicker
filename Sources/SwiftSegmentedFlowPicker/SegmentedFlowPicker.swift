@@ -115,7 +115,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		AnyShape(self.shapeButton)
 			.glassEffect(
 				self.selectionColor == nil ?
-					.clear.interactive() :
+					.regular.interactive() :
 					.regular.tint(self.selectionColor).interactive(),
 				in: self.shapeButton
 			)

@@ -52,7 +52,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	/// The shape used for the selection indicator button (default: rounded rectangle with 15pt radius)
 	private var shapeButton: AnyShape = AnyShape(.rect(cornerRadius: 15))
 	
-	///
+	/// Start glass effect on segmented picker
 	private var hasGlassEffect: Bool = false;
 
 	/// Array of all available cases from the generic enum type
@@ -64,12 +64,12 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	///   - selectedSection: A binding to the currently selected segment value
 	///   - content: A view builder closure that returns the view to display for each segment case
 	public init(
-		selectedSection: Binding<T>,
+		selectedSection		: Binding<T>,
 		@ViewBuilder content: @escaping (T) -> Content
 	) {
 		self._selectedSection = selectedSection
-		self.allCases = Array(T.allCases)
-		self.content = content
+		self.allCases 		  = Array(T.allCases)
+		self.content 		  = content
 	}
 
 	public var body: some View {
@@ -78,7 +78,9 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			HStack {
 				ForEach(allCases.indices, id: \.self) { index in
 					buttonNavigation(index).tag(allCases[index])
+					
 				}
+				
 			}
 			.frame(maxWidth: .infinity, alignment: .leading)
 			.background(
@@ -87,20 +89,11 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 					let buttonWidth = buttonsProxy.size.width / CGFloat(allCases.count)
 					
 					if #available(macOS 26.0, *), self.hasGlassEffect {
-						AnyShape(self.shapeButton)
-							.glassEffect(
-								self.selectionColor == nil ?
-									.regular.interactive() :
-										.regular.tint(self.selectionColor).interactive(),
-								in: self.shapeButton
-							)
-							.frame( width: buttonWidth, height: 27 )
-							.offset(x: buttonWidth * CGFloat(currentIndex))
+						rectangleGlassEffect(buttonWidth)
+						
 					} else {
-						AnyShape(self.shapeButton)
-							.fill(self.selectionColor ?? .gray)
-							.frame( width: buttonWidth, height: 27 )
-							.offset(x: buttonWidth * CGFloat(currentIndex))
+						rectangleWithoutGlassEffect(buttonWidth)
+						
 					}
 				}
 			)
@@ -112,6 +105,32 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			.padding(.horizontal)
 		}
 		.frame(height: 27)
+	}
+	
+	/// Compute varaible for rectangle use glasseffect
+	/// - Parameter buttonWidth: Dimension for button
+	/// - Returns: Rectangle with glass effect aplied
+	@available(macOS 26.0, *)
+	private func rectangleGlassEffect(_ buttonWidth: CGFloat) -> some View {
+		AnyShape(self.shapeButton)
+			.glassEffect(
+				self.selectionColor == nil ?
+					.clear.interactive() :
+					.regular.tint(self.selectionColor).interactive(),
+				in: self.shapeButton
+			)
+			.frame(width: buttonWidth, height: 27)
+			.offset(x: buttonWidth * CGFloat(currentIndex))
+	}
+	
+	/// Compute varaible for rectangle use glasseffect
+	/// - Parameter buttonWidth: Dimension for button
+	/// - Returns: Rectangle old UI
+	private func rectangleWithoutGlassEffect(_ buttonWidth: CGFloat) -> some View {
+		AnyShape(self.shapeButton)
+			.fill(self.selectionColor ?? .primary)
+			.frame( width: buttonWidth, height: 27 )
+			.offset(x: buttonWidth * CGFloat(currentIndex))
 	}
 
 	/// Computes the index of the currently selected segment

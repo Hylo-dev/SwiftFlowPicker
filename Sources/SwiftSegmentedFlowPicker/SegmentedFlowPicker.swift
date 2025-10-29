@@ -47,7 +47,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	private var selectionColor: Color? = nil
 	
 	/// The background color of the picker (default: clear)
-	private var backgroundColor: Color = .clear
+	private var backgroundColor: AnyShapeStyle = AnyShapeStyle(.thinMaterial)
 	
 	/// The shape used for the selection indicator button (default: rounded rectangle with 15pt radius)
 	private var shapeButton: AnyShape = AnyShape(.rect(cornerRadius: 15))
@@ -180,9 +180,9 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	///
 	/// - Parameter color: The background color for the picker
 	/// - Returns: A modified copy of the picker with the specified background color
-	public func backgroundColor(_ color: Color) -> Self {
+	public func backgroundColor<S: ShapeStyle>(_ style: S) -> Self {
 		var view = self
-		view.backgroundColor = color
+		view.backgroundColor = AnyShapeStyle(style)
 		return view
 	}
 

@@ -80,31 +80,10 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			HStack {
 				ForEach(allCases, id: \.self) { item in
 					buttonNavigation(for: item).tag(item)
-					
 				}
-				
 			}
 			.frame(maxWidth: .infinity, alignment: .leading)
-			.background(
-				// Animated sliding indicator background
-				GeometryReader { buttonsProxy in
-					let buttonWidth = buttonsProxy.size.width / CGFloat(allCases.count)
-					
-					if #available(macOS 26.0, *), self.hasGlassEffect {
-						rectangleGlassEffect(
-							buttonWidth,
-							index: currentIndex
-						)
-						
-					} else {
-						rectangleWithoutGlassEffect(
-							buttonWidth,
-							index: currentIndex
-						)
-						
-					}
-				}
-			)
+			.background(backgroundRectangle(currentIndex))
 			.background(
 				AnyShape(self.shapeButton)
 					.fill(self.backgroundColor)
@@ -114,6 +93,61 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		}
 		.frame(height: 27)
 	}
+	
+	// MARK: - View computed
+	
+	/// Creates a button for a specific segment at the given index.
+	///
+	/// - Parameter index: The index of the segment in the `allCases` array
+	/// - Returns: A button view configured for the specified segment
+	@ViewBuilder
+	private func buttonNavigation(for item: T) -> some View {
+		Button {
+			withAnimation() { self.selectedSection = item }
+			
+		} label: {
+			content(item)
+				.padding(.vertical, 4)
+				.padding(.horizontal, 8)
+				.frame(maxWidth: .infinity)
+				.foregroundColor(
+					selectedSection == item
+						? .white
+						: .primary
+				)
+				.contentShape(Rectangle())
+
+		}
+		.buttonStyle(.plain)
+	}
+	
+	/// Creates a rectangle for evident select section
+	///
+	/// - Parameter index: The index of the segment in the `allCases` array
+	/// - Returns: Rectangle, this move to selected tab
+	@ViewBuilder
+	private func backgroundRectangle(_ index: Int) -> some View {
+		// Animated sliding indicator background
+		GeometryReader { buttonsProxy in
+			let buttonWidth = buttonsProxy.size.width / CGFloat(allCases.count)
+			
+			if #available(macOS 26.0, *), self.hasGlassEffect {
+				rectangleGlassEffect(
+					buttonWidth,
+					index: index
+				)
+				
+			} else {
+				rectangleWithoutGlassEffect(
+					buttonWidth,
+					index: index
+				)
+				
+			}
+		}
+	}
+	
+	// MARK: - Modifiers
 	
 	/// Compute varaible for rectangle use glasseffect
 	/// - Parameter buttonWidth: Dimension for button
@@ -147,31 +181,6 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			.fill(self.selectionColor ?? .primary)
 			.frame( width: buttonWidth, height: 27 )
 			.offset(x: buttonWidth * CGFloat(index))
-	}
-
-	/// Creates a button for a specific segment at the given index.
-	///
-	/// - Parameter index: The index of the segment in the `allCases` array
-	/// - Returns: A button view configured for the specified segment
-	@ViewBuilder
-	private func buttonNavigation(for item: T) -> some View {
-		Button {
-			withAnimation() { self.selectedSection = item }
-			
-		} label: {
-			content(item)
-				.padding(.vertical, 4)
-				.padding(.horizontal, 8)
-				.frame(maxWidth: .infinity)
-				.foregroundColor(
-					selectedSection == item
-						? .white
-						: .primary
-				)
-				.contentShape(Rectangle())
-
-		}
-		.buttonStyle(.plain)
 	}
 
 	/// Sets the color of the selection indicator.

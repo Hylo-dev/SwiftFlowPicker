@@ -73,11 +73,13 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	}
 
 	public var body: some View {
+		let currentIndex = allCases.firstIndex(of: selectedSection) ?? 0
+		
 		GeometryReader { proxy in
 			// Horizontal stack containing all segment buttons
 			HStack {
-				ForEach(allCases.indices, id: \.self) { index in
-					buttonNavigation(index).tag(allCases[index])
+				ForEach(allCases, id: \.self) { item in
+					buttonNavigation(for: item).tag(item)
 					
 				}
 				
@@ -89,10 +91,16 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 					let buttonWidth = buttonsProxy.size.width / CGFloat(allCases.count)
 					
 					if #available(macOS 26.0, *), self.hasGlassEffect {
-						rectangleGlassEffect(buttonWidth)
+						rectangleGlassEffect(
+							buttonWidth,
+							index: currentIndex
+						)
 						
 					} else {
-						rectangleWithoutGlassEffect(buttonWidth)
+						rectangleWithoutGlassEffect(
+							buttonWidth,
+							index: currentIndex
+						)
 						
 					}
 				}
@@ -111,7 +119,11 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	/// - Parameter buttonWidth: Dimension for button
 	/// - Returns: Rectangle with glass effect aplied
 	@available(macOS 26.0, *)
-	private func rectangleGlassEffect(_ buttonWidth: CGFloat) -> some View {
+	private func rectangleGlassEffect(
+		_ buttonWidth: CGFloat,
+		index		 : Int
+	) -> some View {
+		
 		AnyShape(self.shapeButton)
 			.glassEffect(
 				self.selectionColor == nil ?
@@ -120,24 +132,21 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 				in: self.shapeButton
 			)
 			.frame(width: buttonWidth, height: 27)
-			.offset(x: buttonWidth * CGFloat(currentIndex))
+			.offset(x: buttonWidth * CGFloat(index))
 	}
 	
 	/// Compute varaible for rectangle use glasseffect
 	/// - Parameter buttonWidth: Dimension for button
 	/// - Returns: Rectangle old UI
-	private func rectangleWithoutGlassEffect(_ buttonWidth: CGFloat) -> some View {
+	private func rectangleWithoutGlassEffect(
+		_ buttonWidth: CGFloat,
+		index: Int
+	) -> some View {
+		
 		AnyShape(self.shapeButton)
 			.fill(self.selectionColor ?? .primary)
 			.frame( width: buttonWidth, height: 27 )
-			.offset(x: buttonWidth * CGFloat(currentIndex))
-	}
-
-	/// Computes the index of the currently selected segment
-	///
-	/// - Returns: The index of the selected segment, or 0 if not found
-	private var currentIndex: Int {
-		allCases.firstIndex(of: selectedSection) ?? 0
+			.offset(x: buttonWidth * CGFloat(index))
 	}
 
 	/// Creates a button for a specific segment at the given index.
@@ -145,18 +154,17 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	/// - Parameter index: The index of the segment in the `allCases` array
 	/// - Returns: A button view configured for the specified segment
 	@ViewBuilder
-	private func buttonNavigation(_ index: Int) -> some View {
+	private func buttonNavigation(for item: T) -> some View {
 		Button {
-			withAnimation() {
-				self.selectedSection = allCases[index]
-			}
+			withAnimation() { self.selectedSection = item }
+			
 		} label: {
-			content(allCases[index])
+			content(item)
 				.padding(.vertical, 4)
 				.padding(.horizontal, 8)
 				.frame(maxWidth: .infinity)
 				.foregroundColor(
-					selectedSection == allCases[index]
+					selectedSection == item
 						? .white
 						: .primary
 				)

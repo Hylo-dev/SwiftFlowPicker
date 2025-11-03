@@ -109,16 +109,15 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			content(item)
 				.padding(.vertical, 4)
 				.padding(.horizontal, 8)
-				.frame(maxWidth: .infinity)
 				.foregroundColor(
 					selectedSection == item
 						? .white
 						: .primary
 				)
 				.contentShape(Rectangle())
-
 		}
 		.buttonStyle(.plain)
+		.frame(maxWidth: .infinity)
 	}
 	
 	/// Creates a rectangle for evident select section

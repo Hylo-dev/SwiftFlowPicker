@@ -84,6 +84,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 				}
 			}
 			.frame(maxWidth: .infinity, alignment: .leading)
+			.frame(height: 27)
 			.background(backgroundRectangle(currentIndex))
 			.background(
 				AnyShape(self.shapeButton)

@@ -5,34 +5,18 @@ import SwiftUI
 
 // MARK: - SegmentedFlowPicker Previews
 
-/// Enum per i segmenti di testo (basi numeriche)
 fileprivate enum Bases: String, CaseIterable {
 	case dec = "dec"
 	case bin = "bin"
 	case hex = "hex"
 	case oct = "oct"
-	
-	// Aggiungo questo per coerenza, anche se non usato nel tuo codice
-	// mi hai mandato un .tag(section.base) nell'altro file
-	var base: Int {
-		switch self {
-		case .dec: return 10
-		case .bin: return 2
-		case .hex: return 16
-		case .oct: return 8
-		}
-	}
 }
 
 @available(macOS 26.0, *)
 #Preview("Text Segments (Number Bases)") {
+	@Previewable @State var selectedBase: Bases = .dec
 	
-	// 1. Definisce lo stato per il segmento selezionato.
-	@Previewable @State var selectedBase: Bases = .oct
-	
-	// 2. Imposta un ambiente di anteprima per una migliore visualizzazione.
 	ZStack {
-		// Usiamo uno sfondo scuro per far risaltare l'effetto vetro
 		Color.black.opacity(0.8).ignoresSafeArea()
 		
 		VStack(spacing: 15) {
@@ -41,23 +25,17 @@ fileprivate enum Bases: String, CaseIterable {
 				.fontWeight(.semibold)
 				.foregroundColor(.white)
 			
-			Text("Mostra l'uso standard con etichette di testo.")
-				.font(.caption)
-				.foregroundColor(.secondary)
-			
-			// 3. Istanzia il SegmentedFlowPicker.
 			SegmentedFlowPicker(selectedSection: $selectedBase) { base in
-				// 4. Fornisce il contenuto per ogni segmento (un Text).
 				Text(base.rawValue)
-					.font(.body) // Assicurati di specificare un font
+					.font(.body)
 			}
-			.buttonFocusedColor(.blue) // 5. Applica un colore per la selezione.
-			.glassEffect()             // 6. Abilita l'effetto vetro.
-			.frame(width: 280)         // 7. Dà al picker una larghezza definita.
+			.buttonFocusedColor(.blue)
+			.glassEffect()
+			.frame(width: 280)
 			
 		}
 	}
-	.frame(width: 500, height: 250) // Dimensioni della finestra di preview
+	.frame(width: 500, height: 250)
 }
 
 /// Enum per i segmenti con icone (SF Symbols)

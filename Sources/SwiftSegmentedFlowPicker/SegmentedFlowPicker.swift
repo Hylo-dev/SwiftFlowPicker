@@ -77,7 +77,8 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		
 		GeometryReader { proxy in
 			// Horizontal stack containing all segment buttons
-			HStack {
+			// I wish this `spacing = 0` was useless but it is needed to correctly center the selector.
+			HStack(spacing: 0) {
 				ForEach(allCases, id: \.self) { item in
 					buttonNavigation(for: item).tag(item)
 				}
@@ -104,7 +105,6 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	private func buttonNavigation(for item: T) -> some View {
 		Button {
 			withAnimation() { self.selectedSection = item }
-			
 		} label: {
 			content(item)
 				.padding(.vertical, 4)
@@ -223,21 +223,3 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		return view
 	}
 }
-
-//enum Tab: String, CaseIterable {
-//	case home     = "house"
-//	case profile  = "person"
-//	case settings = "gear"
-//}
-//
-//@available(macOS 26.0, *)
-//#Preview {
-//	@Previewable @State var selectedTab: Tab = .home
-//
-//	SegmentedFlowPicker(selectedSection: $selectedTab) { tab in
-//		Image(systemName: tab.rawValue)
-//	}
-//	.buttonFocusedColor(.blue)
-//	.clipShape(RoundedRectangle(cornerRadius: 10))
-//	.glassEffect()
-//}

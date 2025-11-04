@@ -84,7 +84,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 				}
 			}
 			.frame(maxWidth: .infinity, alignment: .leading)
-			.frame(height: 27)
+			.frame(maxHeight: proxy.size.height)// .frame(height: 27)
 			.background(backgroundRectangle(currentIndex))
 			.background(
 				AnyShape(self.shapeButton)
@@ -93,7 +93,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			)
 			.padding(.horizontal)
 		}
-		.frame(height: 27)
+//		.frame(height: 27)
 	}
 	
 	// MARK: - View computed
@@ -111,6 +111,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 				.padding(.vertical, 4)
 				.padding(.horizontal, 8)
 				.frame(maxWidth: .infinity)
+				.frame(maxHeight: .infinity)
 				.foregroundColor(
 					selectedSection == item
 						? .white
@@ -130,17 +131,20 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	private func backgroundRectangle(_ index: Int) -> some View {
 		// Animated sliding indicator background
 		GeometryReader { buttonsProxy in
-			let buttonWidth = buttonsProxy.size.width / CGFloat(allCases.count)
+			let buttonWidth  = buttonsProxy.size.width / CGFloat(allCases.count)
+			let buttonHeight = buttonsProxy.size.height
 			
 			if #available(macOS 26.0, *), self.hasGlassEffect {
 				rectangleGlassEffect(
 					buttonWidth,
+					buttonHeight,
 					index: index
 				)
 				
 			} else {
 				rectangleWithoutGlassEffect(
 					buttonWidth,
+					buttonHeight,
 					index: index
 				)
 				
@@ -155,8 +159,9 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	/// - Returns: Rectangle with glass effect aplied
 	@available(macOS 26.0, *)
 	private func rectangleGlassEffect(
-		_ buttonWidth: CGFloat,
-		index		 : Int
+		_ buttonWidth : CGFloat,
+		_ buttonHeight: CGFloat,
+		index		  : Int
 	) -> some View {
 		
 		AnyShape(self.shapeButton)
@@ -166,7 +171,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 					.regular.tint(self.selectionColor).interactive(),
 				in: self.shapeButton
 			)
-			.frame(width: buttonWidth, height: 27)
+			.frame(width: buttonWidth, height: buttonHeight) // height was 27
 			.offset(x: buttonWidth * CGFloat(index))
 	}
 	
@@ -174,13 +179,14 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 	/// - Parameter buttonWidth: Dimension for button
 	/// - Returns: Rectangle old UI
 	private func rectangleWithoutGlassEffect(
-		_ buttonWidth: CGFloat,
-		index: Int
+		_ buttonWidth : CGFloat,
+		_ buttonHeight: CGFloat,
+		index		  : Int
 	) -> some View {
 		
 		AnyShape(self.shapeButton)
 			.fill(self.selectionColor ?? .primary)
-			.frame( width: buttonWidth, height: 27 )
+			.frame(width: buttonWidth, height: buttonHeight) // height was 27
 			.offset(x: buttonWidth * CGFloat(index))
 	}
 

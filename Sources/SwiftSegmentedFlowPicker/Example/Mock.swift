@@ -24,14 +24,14 @@ fileprivate enum Bases: String, CaseIterable {
 				.font(.title3)
 				.fontWeight(.semibold)
 				.foregroundColor(.white)
-			
+					
 			SegmentedFlowPicker(selectedSection: $selectedBase) { base in
 				Text(base.rawValue)
 					.font(.body)
 			}
 			.buttonFocusedColor(.blue)
 			.glassEffect()
-			.frame(width: 280)
+			.frame(width: 500)
 			
 		}
 	}

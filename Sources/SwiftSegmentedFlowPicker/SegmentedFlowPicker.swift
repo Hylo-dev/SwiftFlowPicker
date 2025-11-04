@@ -110,6 +110,7 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			content(item)
 				.padding(.vertical, 4)
 				.padding(.horizontal, 8)
+				.frame(maxWidth: .infinity)
 				.foregroundColor(
 					selectedSection == item
 						? .white

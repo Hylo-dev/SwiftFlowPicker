@@ -31,7 +31,7 @@ fileprivate enum Bases: String, CaseIterable {
 			}
 			.buttonFocusedColor(.blue)
 			.glassEffect()
-			.frame(width: 500, height: 200)
+			.frame(width: 500, height: 27)
 			
 		}
 	}

@@ -24,7 +24,7 @@ fileprivate enum Bases: String, CaseIterable {
 				.font(.title3)
 				.fontWeight(.semibold)
 				.foregroundColor(.white)
-			
+					
 			SegmentedFlowPicker(selectedSection: $selectedBase) { base in
 				Text(base.rawValue)
 					.font(.body)
@@ -32,7 +32,7 @@ fileprivate enum Bases: String, CaseIterable {
 			.tint(.blue)            // Colore della pillola tramite .tint()
 			.cornerRadius(10)       // Raggio degli angoli della pillola
 			.glassEffect()
-			.frame(width: 280)
+			.frame(width: 500, height: 27)
 			
 		}
 	}

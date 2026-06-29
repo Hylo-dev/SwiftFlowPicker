@@ -30,8 +30,8 @@ import SwiftUI
 /// SegmentedFlowPicker(selectedSection: $selectedTab) { tab in
 ///     Image(systemName: tab.rawValue)
 /// }
-/// .buttonFocusedColor(.blue)
-/// .clipShape(RoundedRectangle(cornerRadius: 12))
+/// .tint(.blue)
+/// .cornerRadius(12)
 /// .glassEffect()
 ///
 /// ```
@@ -91,7 +91,6 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 					.fill(self.backgroundColor)
 					.frame(maxWidth: .infinity)
 			)
-			.padding(.horizontal)
 		}
 		.frame(height: 27)
 	}
@@ -132,17 +131,19 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			let buttonWidth = buttonsProxy.size.width / CGFloat(allCases.count)
 			
 			if #available(macOS 26.0, *), self.hasGlassEffect {
-				rectangleGlassEffect(
-					buttonWidth,
-					index: index
-				)
-				
+				GlassEffectContainer {
+					rectangleGlassEffect(
+						buttonWidth,
+						index: index
+					)
+				}
+
 			} else {
 				rectangleWithoutGlassEffect(
 					buttonWidth,
 					index: index
 				)
-				
+
 			}
 		}
 	}
@@ -157,15 +158,16 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		_ buttonWidth: CGFloat,
 		index		 : Int
 	) -> some View {
-		
-		AnyShape(self.shapeButton)
+
+		// Apply the glass to a *clear* container clipped to the shape.
+		// Filling the shape with a solid color (as before) would paint over
+		// the glass and make the effect invisible.
+		Color.clear
+			.frame(width: buttonWidth, height: 27)
 			.glassEffect(
-				self.selectionColor == nil ?
-					.regular.interactive() :
-					.regular.tint(self.selectionColor).interactive(),
+				.regular.tint(self.selectionColor).interactive(),
 				in: self.shapeButton
 			)
-			.frame(width: buttonWidth, height: 27)
 			.offset(x: buttonWidth * CGFloat(index))
 	}
 	
@@ -183,13 +185,39 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 			.offset(x: buttonWidth * CGFloat(index))
 	}
 
+	/// Sets the tint color of the sliding selection indicator (the "pill").
+	///
+	/// Use this in place of the system `.tint(_:)` to color the selected segment
+	/// indicator. The color is applied both to the solid indicator and to the
+	/// Liquid Glass indicator (as the glass tint).
+	///
+	/// - Parameter color: The color to use for the focused/selected segment indicator
+	/// - Returns: A modified copy of the picker with the specified selection color
+	public func tint(_ color: Color) -> Self {
+		var view = self
+		view.selectionColor = color
+		return view
+	}
+
 	/// Sets the color of the selection indicator.
 	///
 	/// - Parameter color: The color to use for the focused/selected segment indicator
 	/// - Returns: A modified copy of the picker with the specified selection color
+	@available(*, deprecated, renamed: "tint(_:)", message: "Use .tint(_:) instead.")
 	public func buttonFocusedColor(_ color: Color) -> Self {
+		self.tint(color)
+	}
+
+	/// Sets the corner radius of the sliding selection indicator.
+	///
+	/// Convenience over `clipShape(_:)` for the common rounded-rectangle case.
+	/// For fully custom shapes (e.g. `Capsule`) use `clipShape(_:)` instead.
+	///
+	/// - Parameter radius: The corner radius for the selection indicator
+	/// - Returns: A modified copy of the picker with the specified corner radius
+	public func cornerRadius(_ radius: CGFloat) -> Self {
 		var view = self
-		view.selectionColor = color
+		view.shapeButton = AnyShape(.rect(cornerRadius: radius))
 		return view
 	}
 

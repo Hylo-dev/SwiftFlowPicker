@@ -29,7 +29,8 @@ fileprivate enum Bases: String, CaseIterable {
 				Text(base.rawValue)
 					.font(.body)
 			}
-			.buttonFocusedColor(.blue)
+			.tint(.blue)            // Colore della pillola tramite .tint()
+			.cornerRadius(10)       // Raggio degli angoli della pillola
 			.glassEffect()
 			.frame(width: 280)
 			
@@ -70,7 +71,7 @@ fileprivate enum Tab: String, CaseIterable {
 				// 4. Fornisce il contenuto (un'Image).
 				Image(systemName: tab.rawValue)
 			}
-			.buttonFocusedColor(.purple) // 5. Applica un colore per la selezione.
+			.tint(.purple)               // 5. Applica un colore per la selezione con .tint().
 			.glassEffect()               // 6. Abilita l'effetto vetro.
 			.clipShape(Capsule())        // 7. Applica una forma personalizzata (Capsule).
 			.frame(width: 200)           // 8. Dà al picker una larghezza definita.

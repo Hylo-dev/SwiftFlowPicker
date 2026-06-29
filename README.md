@@ -72,7 +72,23 @@ SegmentedFlowPicker(
 
 You can customize the picker's appearance using view modifiers:
 
-* `.buttonFocusedColor(_ color: Color)`: Sets the tint color of the sliding glass indicator.
+* `.tint(_ color: Color)`: Sets the color of the sliding selection indicator (the "pill"). Applies both to the solid indicator and to the Liquid Glass tint.
+* `.cornerRadius(_ radius: CGFloat)`: Sets the corner radius of the selection indicator.
+* `.clipShape(_ shape: some Shape)`: Sets a fully custom shape for the indicator (e.g. `Capsule()`).
+* `.backgroundColor(_ style: some ShapeStyle)`: Sets the background/track style of the picker.
+* `.glassEffect()`: Enables the Liquid Glass effect on the indicator (macOS 26.0+).
+
+```swift
+SegmentedFlowPicker(selectedSection: $selectedTab) { tab in
+  Image(systemName: tab.rawValue)
+}
+.tint(.blue)
+.cornerRadius(12)
+.glassEffect()
+```
+
+> [!NOTE]
+> `.buttonFocusedColor(_:)` is deprecated — use `.tint(_:)` instead.
 
 ## Project Status
 

@@ -72,6 +72,28 @@ public struct SegmentedFlowPicker<T: RawRepresentable & CaseIterable & Equatable
 		self.content 		  = content
 	}
 
+	/// Creates a segmented flow picker over an explicit subset of segments.
+	///
+	/// Use this when the available options are dynamic — e.g. a segment that only
+	/// exists while some external state holds (a connected device, an open
+	/// document). The default initializer shows `T.allCases`; this one shows
+	/// exactly `items`, in the given order. The caller is responsible for moving
+	/// `selectedSection` off a segment it removes.
+	///
+	/// - Parameters:
+	///   - items: The segments to display, in display order
+	///   - selectedSection: A binding to the currently selected segment value
+	///   - content: A view builder closure that returns the view to display for each segment case
+	public init(
+		items				: [T],
+		selectedSection		: Binding<T>,
+		@ViewBuilder content: @escaping (T) -> Content
+	) {
+		self._selectedSection = selectedSection
+		self.allCases 		  = items
+		self.content 		  = content
+	}
+
 	public var body: some View {
 		let currentIndex = allCases.firstIndex(of: selectedSection) ?? 0
 		
